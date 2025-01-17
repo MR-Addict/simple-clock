@@ -1,0 +1,68 @@
+.settings-button {
+  @apply p-1.5 rounded-full text-xl;
+  @apply fixed left-4 top-4 duration-300 opacity-0 invisible;
+
+  &[data-visible="true"] {
+    @apply opacity-100 visible;
+  }
+
+  &:hover {
+    @apply bg-gray-100/10;
+  }
+}
+
+.settings-wrapper {
+  --width: 18rem;
+  --padding: 1rem;
+
+  padding: var(--padding);
+
+  @apply fixed inset-0 bg-black/30 backdrop-blur-md;
+
+  &[data-open="false"] {
+    visibility: hidden;
+    transition: visibility 0s linear 300ms;
+  }
+
+  &[data-open="true"] {
+    visibility: visible;
+    transition: visibility 0s linear 0s;
+
+    & .settings-content {
+      transform: translateX(0);
+    }
+  }
+}
+
+.settings-content {
+  max-width: var(--width);
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(calc(-1 * var(--width) - var(--padding)));
+
+  @apply flex flex-col gap-6;
+  @apply bg-gray-200/20 rounded-lg p-4 pl-5 h-full;
+
+  & header {
+    @apply flex flex-row justify-between font-bold text-lg;
+
+    & button {
+      @apply p-1 rounded-full text-lg duration-300 text-gray-100/50;
+
+      &:hover {
+        @apply bg-gray-100/10 text-white;
+      }
+    }
+  }
+}
+
+.settings-list {
+  @apply flex flex-col gap-4;
+
+  & .settings-item {
+    @apply flex flex-col gap-1 items-start;
+
+    & .label {
+      @apply text-gray-100/80;
+    }
+  }
+}
