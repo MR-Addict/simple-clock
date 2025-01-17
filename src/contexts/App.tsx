@@ -38,7 +38,7 @@ export const AppContextProvider = ({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     setCursor(isMouseVisible);
-    // if (!isMouseVisible) setOpenSettings(false);
+    if (!isMouseVisible) setOpenSettings(false);
 
     return () => setCursor(true);
   }, [isMouseVisible]);

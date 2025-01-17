@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useMouseVisibility(idleTime = 10000) {
+export default function useMouseVisibility(idleTime = 5000) {
   const [isMouseVisible, setIsMouseVisible] = useState(false);
 
   useEffect(() => {
