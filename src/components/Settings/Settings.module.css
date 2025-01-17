@@ -12,7 +12,7 @@
 }
 
 .settings-wrapper {
-  --width: 18rem;
+  --width: 20rem;
   --padding: 1rem;
 
   padding: var(--padding);
@@ -64,5 +64,13 @@
     & .label {
       @apply text-gray-100/80;
     }
+  }
+}
+
+.github-link {
+  @apply text-sm mt-auto flex flex-row items-center gap-2 text-gray-100/50 duration-300;
+
+  &:hover {
+    @apply text-white;
   }
 }

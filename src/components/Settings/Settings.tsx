@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import { FiGithub } from "react-icons/fi";
 import { RiMenu2Line } from "react-icons/ri";
 import { IoCloseOutline } from "react-icons/io5";
 
@@ -8,7 +9,7 @@ import style from "./Settings.module.css";
 import { useAppContext } from "@/contexts/App";
 
 export default function Settings() {
-  const { config, setConfig, isMouseVisible, openSettings, setOpenSettings } = useAppContext();
+  const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
   return (
     <>
@@ -46,6 +47,14 @@ export default function Settings() {
               </li>
 
               <li className={style["settings-item"]}>
+                <p className={style.label}>Show background</p>
+                <Switch
+                  checked={config.showBackground}
+                  onChange={(value) => setConfig((prev) => ({ ...prev, showBackground: value }))}
+                />
+              </li>
+
+              <li className={style["settings-item"]}>
                 <p className={style.label}>Clock Size</p>
                 <InputNumber
                   value={config.size}
@@ -53,6 +62,17 @@ export default function Settings() {
                 />
               </li>
             </ul>
+
+            <a
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Github Link"
+              href="https://github.com/MR-Addict/simple-clock"
+              className={style["github-link"]}
+            >
+              <span>Github</span>
+              <FiGithub />
+            </a>
           </div>
         </section>,
         document.getElementById("root")!

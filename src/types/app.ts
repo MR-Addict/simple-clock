@@ -8,9 +8,15 @@ export interface AppConfig {
    * Whether to show seconds
    */
   showSeconds: boolean;
+
+  /**
+   * Whether to show background
+   */
+  showBackground: boolean;
 }
 
 export const defaultAppConfig: AppConfig = {
   size: 8,
-  showSeconds: false
+  showSeconds: false,
+  showBackground: false
 };

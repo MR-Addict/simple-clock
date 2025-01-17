@@ -2,10 +2,13 @@
   --width: calc(var(--size) * 0.5);
   --colon-width: calc(var(--width) * 0.3);
 
-  padding-inline: calc(--width);
-  padding-block: calc(--colon-width);
+  &[data-show-background="true"] {
+    padding-inline: calc(--width);
+    padding-block: calc(--colon-width);
+    border-radius: var(--colon-width);
 
-  @apply px-14 rounded-3xl bg-gray-100/10;
+    @apply bg-gray-100/10 px-14;
+  }
 }
 
 .clock {

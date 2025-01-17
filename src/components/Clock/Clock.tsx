@@ -22,7 +22,11 @@ export default function Clock() {
   }, [config.showSeconds]);
 
   return (
-    <section className={style.wrapper} style={{ "--size": `${config.size}rem` } as React.CSSProperties}>
+    <section
+      className={style.wrapper}
+      data-show-background={config.showBackground}
+      style={{ "--size": `${config.size}rem` } as React.CSSProperties}
+    >
       <ul className={style.clock}>
         {/* Hour */}
         <li className={style["digit-group"]}>
