@@ -1,9 +1,26 @@
 import { useEffect, useState } from "react";
 
-export default function useMouseVisibility(idleTime = 5000) {
+interface Options {
+  idleTime?: number;
+  disabled?: boolean;
+}
+
+const defaultOptions: Options = {
+  idleTime: 3000,
+  disabled: false
+};
+
+export default function useMouseVisibility(options = defaultOptions) {
+  options = { ...defaultOptions, ...options };
+
   const [isMouseVisible, setIsMouseVisible] = useState(false);
 
   useEffect(() => {
+    if (options.disabled) {
+      setIsMouseVisible(true);
+      return;
+    }
+
     let timer: NodeJS.Timeout;
 
     const handleMouseMove = () => {
@@ -13,7 +30,7 @@ export default function useMouseVisibility(idleTime = 5000) {
       if (timer) clearTimeout(timer);
 
       // Hide the mouse after `idleTime` of inactivity
-      timer = setTimeout(() => setIsMouseVisible(false), idleTime);
+      timer = setTimeout(() => setIsMouseVisible(false), options.idleTime);
     };
 
     // Attach the event listener
@@ -24,7 +41,7 @@ export default function useMouseVisibility(idleTime = 5000) {
       window.removeEventListener("mousemove", handleMouseMove);
       clearTimeout(timer);
     };
-  }, [idleTime]);
+  }, [options]);
 
   return isMouseVisible;
 }

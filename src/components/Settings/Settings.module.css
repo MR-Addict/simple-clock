@@ -1,13 +1,13 @@
 .settings-button {
   @apply p-1.5 rounded-full text-xl;
-  @apply fixed left-4 top-4 duration-300 opacity-0 invisible;
+  @apply fixed left-4 top-4 duration-300 opacity-0 invisible text-gray-100/50;
 
   &[data-visible="true"] {
     @apply opacity-100 visible;
   }
 
   &:hover {
-    @apply bg-gray-100/10;
+    @apply bg-gray-100/10 text-white;
   }
 }
 
@@ -40,7 +40,7 @@
   transform: translateX(calc(-1 * var(--width) - var(--padding)));
 
   @apply flex flex-col gap-6;
-  @apply bg-gray-200/20 rounded-lg p-4 pl-5 h-full;
+  @apply bg-gray-100/20 rounded-xl py-4 pl-5 pr-3 h-full;
 
   & header {
     @apply flex flex-row justify-between font-bold text-lg;

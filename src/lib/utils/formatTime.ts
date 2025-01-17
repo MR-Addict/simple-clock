@@ -13,10 +13,10 @@ const defaultOptoins: Required<Options> = {
   timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
 };
 
-export function splitDigits(num: number): [number, number] {
+export function splitDigits(num: number): string {
   if (num >= 100) throw new Error("Number must be less than 100");
 
-  return [Math.floor(num / 10), num % 10];
+  return `${Math.floor(num / 10)}${num % 10}`;
 }
 
 export function formatTime(date: Date, options?: Options): FormatTime {

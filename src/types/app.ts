@@ -1,22 +1,25 @@
-export interface AppConfig {
+import z from "zod";
+
+export const AppConfig = z.object({
   /**
    * Font size in rem
    */
-  size: number;
+  size: z.number(),
 
   /**
    * Whether to show seconds
    */
-  showSeconds: boolean;
+  showSeconds: z.boolean(),
 
   /**
    * Whether to show background
    */
-  showBackground: boolean;
-}
+  showBackground: z.boolean()
+});
+export type AppConfigType = z.infer<typeof AppConfig>;
 
-export const defaultAppConfig: AppConfig = {
-  size: 8,
+export const defaultAppConfig: AppConfigType = {
+  size: 6,
   showSeconds: false,
   showBackground: false
 };

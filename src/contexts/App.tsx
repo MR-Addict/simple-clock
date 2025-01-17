@@ -2,16 +2,16 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
-import usePersistantState from "@/hooks/usePersistantState";
+import useAppConfig from "@/hooks/useAppConfig";
 import useMouseVisibility from "@/hooks/useMouseVisibility";
 
-import { AppConfig, defaultAppConfig } from "@/types/app";
+import { AppConfigType, defaultAppConfig } from "@/types/app";
 
 interface AppContextProps {
   isMouseVisible: boolean;
 
-  config: AppConfig;
-  setConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
+  config: AppConfigType;
+  setConfig: React.Dispatch<React.SetStateAction<AppConfigType>>;
 
   openSettings: boolean;
   setOpenSettings: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,14 +32,13 @@ function setCursor(show: boolean) {
 }
 
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const isMouseVisible = useMouseVisibility();
+  const { config, setConfig } = useAppConfig();
   const [openSettings, setOpenSettings] = useState(false);
-  const [config, setConfig] = usePersistantState("config", defaultAppConfig);
+
+  const isMouseVisible = useMouseVisibility({ disabled: openSettings });
 
   useEffect(() => {
     setCursor(isMouseVisible);
-    if (!isMouseVisible) setOpenSettings(false);
-
     return () => setCursor(true);
   }, [isMouseVisible]);
 

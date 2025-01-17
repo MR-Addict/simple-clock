@@ -3,13 +3,31 @@ import { FiGithub } from "react-icons/fi";
 import { RiMenu2Line } from "react-icons/ri";
 import { IoCloseOutline } from "react-icons/io5";
 
+import { useEffect, useState } from "react";
 import { Switch, InputNumber } from "antd";
 
 import style from "./Settings.module.css";
 import { useAppContext } from "@/contexts/App";
 
 export default function Settings() {
+  const [fullscreen, setFullscreen] = useState(false);
   const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
+
+  function handleFullscreen(value: boolean) {
+    if (!value) document.exitFullscreen();
+    else document.documentElement.requestFullscreen();
+  }
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (document.fullscreenElement) setFullscreen(true);
+      else setFullscreen(false);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   return (
     <>
@@ -38,6 +56,11 @@ export default function Settings() {
             </header>
 
             <ul className={style["settings-list"]}>
+              <li className={style["settings-item"]}>
+                <p className={style.label}>Fullscreen</p>
+                <Switch checked={fullscreen} onChange={handleFullscreen} />
+              </li>
+
               <li className={style["settings-item"]}>
                 <p className={style.label}>Show seconds</p>
                 <Switch
