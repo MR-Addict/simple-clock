@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-#root {
+body {
   min-height: 100vh;
   min-height: 100svh;
 
-  @apply bg-black text-white flex flex-col items-center justify-center;
+  @apply bg-black text-white flex items-center justify-center;
+}
+
+#root {
+  @apply p-5 overflow-auto;
 }

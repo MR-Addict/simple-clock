@@ -3,7 +3,7 @@
   @apply fixed left-4 top-4 duration-300 opacity-0 invisible text-gray-100/50;
 
   &[data-visible="true"] {
-    @apply opacity-100 visible;
+    @apply opacity-100 visible delay-700;
   }
 
   &:hover {
@@ -40,7 +40,7 @@
   transform: translateX(calc(-1 * var(--width) - var(--padding)));
 
   @apply flex flex-col gap-6;
-  @apply bg-gray-100/20 rounded-xl py-4 pl-5 pr-3 h-full;
+  @apply bg-gray-100/20 rounded-xl py-4 pl-5 pr-3 h-full overflow-y-auto;
 
   & header {
     @apply flex flex-row justify-between font-bold text-lg;
@@ -68,7 +68,7 @@
 }
 
 .github-link {
-  @apply text-sm mt-auto flex flex-row items-center gap-2 text-gray-100/50 duration-300;
+  @apply text-sm mt-auto flex flex-row items-center gap-1.5 text-gray-100/50 duration-300;
 
   &:hover {
     @apply text-white;

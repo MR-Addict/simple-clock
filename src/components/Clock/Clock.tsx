@@ -28,10 +28,10 @@ export default function Clock() {
   return (
     <section
       className={style.wrapper}
+      style={{ fontSize: `${config.size}em` }}
       data-show-background={config.showBackground}
-      style={{ "--size": `${config.size}rem` } as React.CSSProperties}
     >
-      <p className={style.clock}>{stringTime}</p>
+      {stringTime}
     </section>
   );
 }

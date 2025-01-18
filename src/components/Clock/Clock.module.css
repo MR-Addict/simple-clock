@@ -1,14 +1,12 @@
 .wrapper {
-  &[data-show-background="true"] {
-    border-radius: 1.5em;
-
-    @apply bg-gray-100/10 px-14;
-  }
-}
-
-.clock {
   font-weight: bold;
-  font-size: var(--size);
 
-  @apply flex flex-row items-center gap-6;
+  @apply font-bold flex flex-row items-center gap-6 w-fit;
+
+  &[data-show-background="true"] {
+    padding-inline: 0.3em;
+    border-radius: 0.15em;
+
+    @apply bg-gray-100/10;
+  }
 }
