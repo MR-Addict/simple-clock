@@ -7,10 +7,12 @@ import { Switch, InputNumber } from "antd";
 import { useEffect, useState } from "react";
 
 import style from "./Settings.module.css";
+import useWakelock from "@/hooks/useWakelock";
 import { useAppContext } from "@/contexts/App";
 
 export default function Settings() {
   const [fullscreen, setFullscreen] = useState(false);
+
   const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
   function handleFullscreen(value: boolean) {
@@ -18,6 +20,8 @@ export default function Settings() {
     if (!value) document.exitFullscreen();
     else document.documentElement.requestFullscreen();
   }
+
+  useWakelock(fullscreen);
 
   useEffect(() => {
     const handleFullscreenChange = () => {

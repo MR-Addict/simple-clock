@@ -1,6 +1,4 @@
 .wrapper {
-  font-weight: bold;
-
   @apply font-bold flex flex-row items-center gap-6 w-fit;
 
   &[data-show-background="true"] {
