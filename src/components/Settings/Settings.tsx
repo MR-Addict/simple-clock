@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import { PiCoffee } from "react-icons/pi";
 import { FiGithub } from "react-icons/fi";
 import { RiMenu2Line } from "react-icons/ri";
 import { IoCloseOutline } from "react-icons/io5";
@@ -6,39 +7,49 @@ import { IoCloseOutline } from "react-icons/io5";
 import { Switch, InputNumber } from "antd";
 import { useEffect, useState } from "react";
 
-import style from "./Settings.module.css";
 import useWakelock from "@/hooks/useWakelock";
+import useCtrlWheel from "@/hooks/useCtrlWheel";
+import useMatchMedia from "@/hooks/useMatchMedia";
+
+import style from "./Settings.module.css";
 import { useAppContext } from "@/contexts/App";
+import { useScreenHintContext } from "@/contexts/ScreenHint";
 
 export default function Settings() {
   const [fullscreen, setFullscreen] = useState(false);
 
+  const locked = useWakelock(fullscreen);
+
+  const { setHint } = useScreenHintContext();
   const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
-  function handleFullscreen(value: boolean) {
+  async function handleFullscreen(value: boolean) {
     setOpenSettings(false);
-    if (!value) document.exitFullscreen();
-    else document.documentElement.requestFullscreen();
+
+    try {
+      if (!value) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch (err) {
+      console.error(err);
+      alert(`Unable to ${value ? "enter" : "exit"} fullscreen, you may need to manually press F11`);
+    }
   }
 
-  useWakelock(fullscreen);
+  function handleZoom(dir: "up" | "down") {
+    const size = config.size + (dir === "up" ? 1 : -1);
+    setHint(`Size ${size}`);
+    setConfig((prev) => ({ ...prev, size }));
+  }
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      if (document.fullscreenElement) setFullscreen(true);
-      else setFullscreen(false);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-
-    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
+  useCtrlWheel(handleZoom);
+  useMatchMedia(setFullscreen, "(display-mode: fullscreen)");
+  useEffect(() => setHint(locked ? "Locked" : ""), [locked]);
 
   return (
     <>
       <button
         type="button"
-        aria-label="Open Panel"
+        title="Open Settings"
         className={style["settings-button"]}
         onClick={() => setOpenSettings(true)}
         data-visible={isMouseVisible && !openSettings}
@@ -55,7 +66,14 @@ export default function Settings() {
           <div className={style["settings-content"]}>
             <header>
               <h1>Settings</h1>
-              <button type="button" onClick={() => setOpenSettings(false)} aria-label="Close Panel">
+
+              {locked && (
+                <div title="Your device is keeping awake">
+                  <PiCoffee />
+                </div>
+              )}
+
+              <button type="button" onClick={() => setOpenSettings(false)} title="Close Settings">
                 <IoCloseOutline />
               </button>
             </header>
@@ -92,16 +110,18 @@ export default function Settings() {
               </li>
             </ul>
 
-            <a
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Github Link"
-              href="https://github.com/MR-Addict/simple-clock"
-              className={style["github-link"]}
-            >
-              <span>Github</span>
-              <FiGithub />
-            </a>
+            <footer className={style["settings-footer"]}>
+              <a
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Github Link"
+                href="https://github.com/MR-Addict/simple-clock"
+                className={style["github-link"]}
+              >
+                <span>Github</span>
+                <FiGithub />
+              </a>
+            </footer>
           </div>
         </section>,
         document.getElementById("root")!

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function useWakelock(wake: boolean) {
+export default function useWakelock(lock: boolean) {
   const [locked, setLocked] = useState(false);
 
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
@@ -10,13 +10,14 @@ export default function useWakelock(wake: boolean) {
       /**
        * If wake is true, request a wake lock.
        */
-      if (wake) {
+      if (lock) {
         try {
           wakeLockRef.current = await navigator.wakeLock.request("screen");
           setLocked(wakeLockRef.current?.released === false);
         } catch (e) {
           console.error(e);
           setLocked(false);
+          alert("Your browser or device currently doesn't allow the screen to stay awake");
         }
 
         return;
@@ -41,7 +42,7 @@ export default function useWakelock(wake: boolean) {
       wakeLockRef.current?.release();
       setLocked(wakeLockRef.current?.released === false);
     };
-  }, [wake]);
+  }, [lock]);
 
   return locked;
 }

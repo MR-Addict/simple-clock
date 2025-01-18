@@ -7,7 +7,7 @@
   }
 
   &:hover {
-    @apply bg-gray-100/10 text-white;
+    @apply bg-gray-100/10 text-white delay-0;
   }
 }
 
@@ -43,10 +43,22 @@
   @apply bg-gray-100/20 rounded-xl py-4 pl-5 pr-3 h-full overflow-y-auto;
 
   & header {
-    @apply flex flex-row justify-between font-bold text-lg;
+    @apply flex flex-row items-center gap-1.5;
+
+    & h1 {
+      @apply font-bold text-lg;
+    }
+
+    & :is(button, div) {
+      @apply text-gray-100/50;
+    }
+
+    & div {
+      @apply pt-0.5;
+    }
 
     & button {
-      @apply p-1 rounded-full text-lg duration-300 text-gray-100/50;
+      @apply ml-auto p-1 rounded-full text-lg duration-300;
 
       &:hover {
         @apply bg-gray-100/10 text-white;
@@ -67,8 +79,12 @@
   }
 }
 
+.settings-footer {
+  @apply mt-auto text-sm flex flex-row items-center;
+}
+
 .github-link {
-  @apply text-sm mt-auto flex flex-row items-center gap-1.5 text-gray-100/50 duration-300;
+  @apply text-sm flex flex-row items-center gap-1 text-gray-100/50 duration-300;
 
   &:hover {
     @apply text-white;
