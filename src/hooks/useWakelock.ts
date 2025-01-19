@@ -13,7 +13,7 @@ function isWakeLockAvailable() {
  * - `releaseWakeLock`: A function to release the wake lock
  */
 export default function useWakelock() {
-  const [keepAwake, setKeepAwake] = useState<boolean | null>(() => (isWakeLockAvailable() ? null : false));
+  const [keepAwake, setKeepAwake] = useState<boolean | null>(() => (isWakeLockAvailable() ? false : null));
 
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
@@ -28,8 +28,10 @@ export default function useWakelock() {
     let success = false;
 
     try {
+      // If the wake lock is not available, return false
+      if (!isWakeLockAvailable()) success = false;
       // If the wake lock is already active, return true
-      if (wakeLockRef.current && !wakeLockRef.current.released) success = true;
+      else if (wakeLockRef.current && !wakeLockRef.current.released) success = true;
       // Otherwise, request a new wake lock
       else {
         wakeLockRef.current = await navigator.wakeLock.request("screen");
@@ -52,8 +54,10 @@ export default function useWakelock() {
     let success = false;
 
     try {
+      // If the wake lock is not available, return false
+      if (!isWakeLockAvailable()) success = false;
       // If there is no wake lock to release, return false
-      if (!wakeLockRef.current) success = false;
+      else if (!wakeLockRef.current) success = false;
       // If the wake lock is already released, return true
       else if (wakeLockRef.current.released) success = true;
       // Otherwise, release the wake lock

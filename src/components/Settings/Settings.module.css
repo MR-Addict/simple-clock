@@ -3,10 +3,10 @@
 
   & button {
     @apply p-1.5 rounded-full text-xl;
-    @apply duration-300 opacity-0 invisible text-gray-100/50;
+    @apply duration-300 opacity-100 visible text-gray-100/50;
 
-    &[data-visible="true"] {
-      @apply opacity-100 visible;
+    &[data-hide="true"] {
+      @apply opacity-0 invisible;
     }
 
     &:hover {

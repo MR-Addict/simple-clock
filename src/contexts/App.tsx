@@ -2,13 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
+import useUserIdle from "@/hooks/useUserIdle";
 import useAppConfig from "@/hooks/useAppConfig";
-import useMouseVisibility from "@/hooks/useMouseVisibility";
 
 import { AppConfigType, defaultAppConfig } from "@/types/app";
 
 interface AppContextProps {
-  isMouseVisible: boolean;
+  userIdle: boolean;
 
   config: AppConfigType;
   setConfig: React.Dispatch<React.SetStateAction<AppConfigType>>;
@@ -18,7 +18,7 @@ interface AppContextProps {
 }
 
 const AppContext = createContext<AppContextProps>({
-  isMouseVisible: false,
+  userIdle: false,
 
   config: defaultAppConfig,
   setConfig: () => {},
@@ -27,8 +27,8 @@ const AppContext = createContext<AppContextProps>({
   setOpenSettings: () => {}
 });
 
-function setCursor(show: boolean) {
-  document.body.style.cursor = show ? "auto" : "none";
+function setCursor(hide: boolean) {
+  document.body.style.cursor = hide ? "none" : "auto";
 }
 
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -36,17 +36,17 @@ export const AppContextProvider = ({ children }: { children: React.ReactNode }) 
 
   const [openSettings, setOpenSettings] = useState(false);
 
-  const isMouseVisible = useMouseVisibility({ disabled: openSettings });
+  const userIdle = useUserIdle({ disabled: openSettings });
 
   useEffect(() => {
-    setCursor(isMouseVisible);
-    return () => setCursor(true);
-  }, [isMouseVisible]);
+    setCursor(userIdle);
+    return () => setCursor(false);
+  }, [userIdle]);
 
   return (
     <AppContext.Provider
       value={{
-        isMouseVisible,
+        userIdle,
 
         config,
         setConfig,

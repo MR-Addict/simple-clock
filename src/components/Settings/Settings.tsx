@@ -1,17 +1,17 @@
-import { createPortal } from "react-dom";
 import { PiCoffee } from "react-icons/pi";
 import { FiGithub } from "react-icons/fi";
 import { RiMenu2Line } from "react-icons/ri";
 import { IoCloseOutline } from "react-icons/io5";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { Switch, InputNumber } from "antd";
 
+import style from "./Settings.module.css";
 import useWakelock from "@/hooks/useWakelock";
 import useCtrlWheel from "@/hooks/useCtrlWheel";
 import useMatchMedia from "@/hooks/useMatchMedia";
 
-import style from "./Settings.module.css";
 import { useAppContext } from "@/contexts/App";
 import { useScreenHintContext } from "@/contexts/ScreenHint";
 
@@ -20,7 +20,7 @@ export default function Settings() {
   const [keepAwake, requestWakeLock, releaseWakeLock] = useWakelock();
 
   const { setHint } = useScreenHintContext();
-  const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
+  const { userIdle, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
   async function handleFullscreen(value: boolean) {
     setOpenSettings(false);
@@ -50,7 +50,7 @@ export default function Settings() {
           type="button"
           title="Open Settings"
           onClick={() => setOpenSettings(true)}
-          data-visible={isMouseVisible && !openSettings}
+          data-hide={userIdle || openSettings}
         >
           <RiMenu2Line />
         </button>
@@ -59,7 +59,7 @@ export default function Settings() {
           type="button"
           title="Your device is keeping awake, click to release"
           onClick={releaseWakeLock}
-          data-visible={isMouseVisible && !openSettings && keepAwake}
+          data-hide={userIdle || openSettings || !keepAwake}
         >
           <PiCoffee />
         </button>
