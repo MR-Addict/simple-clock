@@ -4,10 +4,9 @@ import { FiGithub } from "react-icons/fi";
 import { RiMenu2Line } from "react-icons/ri";
 import { IoCloseOutline } from "react-icons/io5";
 
+import { useState } from "react";
 import { Switch, InputNumber } from "antd";
-import { useEffect, useState } from "react";
 
-import useWakelock from "@/hooks/useWakelock";
 import useCtrlWheel from "@/hooks/useCtrlWheel";
 import useMatchMedia from "@/hooks/useMatchMedia";
 
@@ -18,10 +17,8 @@ import { useScreenHintContext } from "@/contexts/ScreenHint";
 export default function Settings() {
   const [fullscreen, setFullscreen] = useState(false);
 
-  const locked = useWakelock(fullscreen);
-
   const { setHint } = useScreenHintContext();
-  const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
+  const { keepAwake, isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
   async function handleFullscreen(value: boolean) {
     setOpenSettings(false);
@@ -31,7 +28,7 @@ export default function Settings() {
       else await document.documentElement.requestFullscreen();
     } catch (err) {
       console.error(err);
-      alert(`Unable to ${value ? "enter" : "exit"} fullscreen, you may need to manually press F11`);
+      alert(`Unable to ${value ? "enter" : "exit"} fullscreen, you may need to manually do it`);
     }
   }
 
@@ -43,19 +40,23 @@ export default function Settings() {
 
   useCtrlWheel(handleZoom);
   useMatchMedia(setFullscreen, "(display-mode: fullscreen)");
-  useEffect(() => setHint(locked ? "Locked" : ""), [locked]);
 
   return (
     <>
-      <button
-        type="button"
-        title="Open Settings"
-        className={style["settings-button"]}
-        onClick={() => setOpenSettings(true)}
-        data-visible={isMouseVisible && !openSettings}
-      >
-        <RiMenu2Line />
-      </button>
+      <div className={style["settings-buttons"]}>
+        <button
+          type="button"
+          title="Open Settings"
+          onClick={() => setOpenSettings(true)}
+          data-visible={isMouseVisible && !openSettings}
+        >
+          <RiMenu2Line />
+        </button>
+
+        <div data-visible={isMouseVisible && !openSettings && keepAwake} title="Your device is keeping awake">
+          <PiCoffee />
+        </div>
+      </div>
 
       {createPortal(
         <section
@@ -67,12 +68,6 @@ export default function Settings() {
             <header>
               <h1>Settings</h1>
 
-              {locked && (
-                <div title="Your device is keeping awake">
-                  <PiCoffee />
-                </div>
-              )}
-
               <button type="button" onClick={() => setOpenSettings(false)} title="Close Settings">
                 <IoCloseOutline />
               </button>
@@ -80,12 +75,8 @@ export default function Settings() {
 
             <ul className={style["settings-list"]}>
               <li className={style["settings-item"]}>
-                <p className={style.label}>Fullscreen</p>
-                <Switch checked={fullscreen} onChange={handleFullscreen} disabled={!document.fullscreenEnabled} />
-              </li>
-
-              <li className={style["settings-item"]}>
                 <p className={style.label}>Show seconds</p>
+                <p className={style.description}>Show seconds in the clock</p>
                 <Switch
                   checked={config.showSeconds}
                   onChange={(value) => setConfig((prev) => ({ ...prev, showSeconds: value }))}
@@ -94,6 +85,7 @@ export default function Settings() {
 
               <li className={style["settings-item"]}>
                 <p className={style.label}>Show background</p>
+                <p className={style.description}>Show background in the clock</p>
                 <Switch
                   checked={config.showBackground}
                   onChange={(value) => setConfig((prev) => ({ ...prev, showBackground: value }))}
@@ -101,7 +93,31 @@ export default function Settings() {
               </li>
 
               <li className={style["settings-item"]}>
+                <p className={style.label}>Keep awake</p>
+                <p className={style.description}>
+                  Keep your device awake, this may not work due to your device settings or the page is not visible
+                </p>
+                <Switch
+                  checked={keepAwake}
+                  disabled={!("wakeLock" in navigator)}
+                  onChange={() => setConfig((prev) => ({ ...prev, keepAwake: !keepAwake }))}
+                />
+              </li>
+
+              <li className={style["settings-item"]}>
+                <p className={style.label}>Fullscreen</p>
+                <p className={style.description}>
+                  Toggle between fullscreen mode, this may not work due to your device settings
+                </p>
+                <Switch checked={fullscreen} onChange={handleFullscreen} disabled={!document.fullscreenEnabled} />
+              </li>
+
+              <li className={style["settings-item"]}>
                 <p className={style.label}>Clock Size</p>
+                <p className={style.description}>
+                  Adjust the size of the clock, you can also use <kbd>Ctrl/Cmd</kbd> + <kbd>Wheel</kbd> to adjust the
+                  size
+                </p>
                 <InputNumber
                   min={0}
                   value={config.size}

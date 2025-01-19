@@ -2,12 +2,14 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
+import useWakelock from "@/hooks/useWakelock";
 import useAppConfig from "@/hooks/useAppConfig";
 import useMouseVisibility from "@/hooks/useMouseVisibility";
 
 import { AppConfigType, defaultAppConfig } from "@/types/app";
 
 interface AppContextProps {
+  keepAwake: boolean;
   isMouseVisible: boolean;
 
   config: AppConfigType;
@@ -18,6 +20,7 @@ interface AppContextProps {
 }
 
 const AppContext = createContext<AppContextProps>({
+  keepAwake: false,
   isMouseVisible: false,
 
   config: defaultAppConfig,
@@ -33,8 +36,10 @@ function setCursor(show: boolean) {
 
 export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { config, setConfig } = useAppConfig();
+
   const [openSettings, setOpenSettings] = useState(false);
 
+  const keepAwake = useWakelock(config.keepAwake);
   const isMouseVisible = useMouseVisibility({ disabled: openSettings });
 
   useEffect(() => {
@@ -45,6 +50,7 @@ export const AppContextProvider = ({ children }: { children: React.ReactNode }) 
   return (
     <AppContext.Provider
       value={{
+        keepAwake,
         isMouseVisible,
 
         config,

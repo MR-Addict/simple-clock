@@ -1,18 +1,22 @@
-.settings-button {
-  @apply p-1.5 rounded-full text-xl;
-  @apply fixed left-4 top-4 duration-300 opacity-0 invisible text-gray-100/50;
+.settings-buttons {
+  @apply fixed left-4 top-4 flex flex-row items-center gap-1;
 
-  &[data-visible="true"] {
-    @apply opacity-100 visible delay-500;
+  & > * {
+    @apply p-1.5 rounded-full text-xl;
+    @apply duration-300 opacity-0 invisible text-gray-100/50;
+
+    &[data-visible="true"] {
+      @apply opacity-100 visible delay-500;
+    }
   }
 
-  &:hover {
+  & button:hover {
     @apply bg-gray-100/10 text-white delay-0;
   }
 }
 
 .settings-wrapper {
-  --width: 20rem;
+  --width: 23rem;
   --padding: 1rem;
 
   padding: var(--padding);
@@ -39,7 +43,7 @@
   transition: transform 0.3s ease-in-out;
   transform: translateX(calc(-1 * var(--width) - var(--padding)));
 
-  @apply flex flex-col gap-6;
+  @apply flex flex-col gap-4;
   @apply bg-gray-100/20 rounded-xl py-4 pl-5 pr-3 h-full overflow-y-auto;
 
   & header {
@@ -71,7 +75,11 @@
   @apply flex flex-col gap-4;
 
   & .settings-item {
-    @apply flex flex-col gap-1 items-start;
+    @apply flex flex-col items-start;
+
+    & .description {
+      @apply text-gray-100/50 text-sm mt-0.5 mb-2;
+    }
 
     & .label {
       @apply text-gray-100/80;
