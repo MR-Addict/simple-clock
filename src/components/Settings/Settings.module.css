@@ -1,17 +1,17 @@
 .settings-buttons {
   @apply fixed left-4 top-4 flex flex-row items-center gap-1;
 
-  & > * {
+  & button {
     @apply p-1.5 rounded-full text-xl;
     @apply duration-300 opacity-0 invisible text-gray-100/50;
 
     &[data-visible="true"] {
-      @apply opacity-100 visible delay-500;
+      @apply opacity-100 visible;
     }
-  }
 
-  & button:hover {
-    @apply bg-gray-100/10 text-white delay-0;
+    &:hover {
+      @apply bg-gray-100/20 text-white;
+    }
   }
 }
 
@@ -72,13 +72,13 @@
 }
 
 .settings-list {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col gap-6;
 
   & .settings-item {
     @apply flex flex-col items-start;
 
     & .description {
-      @apply text-gray-100/50 text-sm mt-0.5 mb-2;
+      @apply text-gray-100/50 text-sm mt-0.5 mb-1;
     }
 
     & .label {

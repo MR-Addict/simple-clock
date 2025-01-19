@@ -28,7 +28,7 @@ export default function Settings() {
       else await document.documentElement.requestFullscreen();
     } catch (err) {
       console.error(err);
-      alert(`Unable to ${value ? "enter" : "exit"} fullscreen, you may need to manually do it`);
+      alert(`Unable to ${value ? "enter" : "exit"} fullscreen, you may need to manually toggle it`);
     }
   }
 
@@ -53,9 +53,14 @@ export default function Settings() {
           <RiMenu2Line />
         </button>
 
-        <div data-visible={isMouseVisible && !openSettings && keepAwake} title="Your device is keeping awake">
+        <button
+          type="button"
+          title="Your device is keeping awake"
+          onClick={() => setConfig((prev) => ({ ...prev, keepAwake: false }))}
+          data-visible={isMouseVisible && !openSettings && keepAwake}
+        >
           <PiCoffee />
-        </div>
+        </button>
       </div>
 
       {createPortal(
