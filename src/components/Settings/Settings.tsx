@@ -57,7 +57,7 @@ export default function Settings() {
 
         <button
           type="button"
-          title="Your device is keeping awake"
+          title="Your device is keeping awake, click to release"
           onClick={releaseWakeLock}
           data-visible={isMouseVisible && !openSettings && keepAwake}
         >
@@ -105,8 +105,8 @@ export default function Settings() {
                   Keep your device awake, this may not work due to your device settings or the page is not visible
                 </p>
                 <Switch
-                  checked={keepAwake}
-                  disabled={!("wakeLock" in navigator)}
+                  checked={keepAwake || false}
+                  disabled={keepAwake === null}
                   onChange={(value) => (value ? requestWakeLock() : releaseWakeLock())}
                 />
               </li>

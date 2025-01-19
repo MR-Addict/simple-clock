@@ -1,14 +1,19 @@
 import { useRef, useState } from "react";
 
+function isWakeLockAvailable() {
+  if (typeof navigator === "undefined") return false;
+  return "wakeLock" in navigator;
+}
+
 /**
  *
  * @returns A tuple containing the following values:
- * - `keepAwake`: A boolean indicating whether the screen is kept awake
+ * - `keepAwake`: A boolean indicating whether the wake lock is active, `null` if wake lock is not available
  * - `requestWakeLock`: A function to request a wake lock
  * - `releaseWakeLock`: A function to release the wake lock
  */
 export default function useWakelock() {
-  const [keepAwake, setKeepAwake] = useState(false);
+  const [keepAwake, setKeepAwake] = useState<boolean | null>(() => (isWakeLockAvailable() ? null : false));
 
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
@@ -16,27 +21,55 @@ export default function useWakelock() {
     setKeepAwake(wakeLockRef.current?.released === false);
   }
 
+  /**
+   * @returns A boolean indicating whether the wake lock was successfully requested
+   */
   async function requestWakeLock() {
+    let success = false;
+
     try {
-      wakeLockRef.current = await navigator.wakeLock.request("screen");
-      wakeLockRef.current.addEventListener("release", updateLockStatus);
+      // If the wake lock is already active, return true
+      if (wakeLockRef.current && !wakeLockRef.current.released) success = true;
+      // Otherwise, request a new wake lock
+      else {
+        wakeLockRef.current = await navigator.wakeLock.request("screen");
+        wakeLockRef.current.addEventListener("release", updateLockStatus);
+        success = true;
+      }
     } catch (err) {
       console.error(err);
-    } finally {
-      updateLockStatus();
+      success = false;
     }
+
+    updateLockStatus();
+    return success;
   }
 
+  /**
+   * @returns A boolean indicating whether the wake lock was successfully released
+   */
   async function releaseWakeLock() {
+    let success = false;
+
     try {
-      if (!wakeLockRef.current) return;
-      await wakeLockRef.current.release();
-      wakeLockRef.current.removeEventListener("release", updateLockStatus);
+      // If there is no wake lock to release, return false
+      if (!wakeLockRef.current) success = false;
+      // If the wake lock is already released, return true
+      else if (wakeLockRef.current.released) success = true;
+      // Otherwise, release the wake lock
+      else {
+        await wakeLockRef.current.release();
+        wakeLockRef.current.removeEventListener("release", updateLockStatus);
+        success = true;
+      }
     } catch (err) {
       console.error(err);
-    } finally {
-      updateLockStatus();
+      success = false;
     }
+
+    updateLockStatus();
+
+    return success;
   }
 
   return [keepAwake, requestWakeLock, releaseWakeLock] as const;
