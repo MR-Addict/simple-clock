@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { AppConfig, AppConfigType, defaultAppConfig } from "@/types/app";
 
 export function loadAppConfig(): AppConfigType {
-  const localConfig = JSON.parse(localStorage.getItem("config") || "{}");
+  let localConfig = {};
 
-  // If the browser doesn't support the Wake Lock API, set the keepAwake to false
-  if (!("wakeLock" in navigator)) Object.assign(localConfig, { keepAwake: false });
+  try {
+    localConfig = JSON.parse(localStorage.getItem("config") || "{}");
+  } catch (err) {
+    console.error(err);
+  }
 
   const parsedConfig = AppConfig.safeParse(localConfig);
 
   if (!parsedConfig.success) return defaultAppConfig;
-
   return parsedConfig.data;
 }
 

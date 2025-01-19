@@ -7,6 +7,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useState } from "react";
 import { Switch, InputNumber } from "antd";
 
+import useWakelock from "@/hooks/useWakelock";
 import useCtrlWheel from "@/hooks/useCtrlWheel";
 import useMatchMedia from "@/hooks/useMatchMedia";
 
@@ -16,9 +17,10 @@ import { useScreenHintContext } from "@/contexts/ScreenHint";
 
 export default function Settings() {
   const [fullscreen, setFullscreen] = useState(false);
+  const [keepAwake, requestWakeLock, releaseWakeLock] = useWakelock();
 
   const { setHint } = useScreenHintContext();
-  const { keepAwake, isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
+  const { isMouseVisible, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
   async function handleFullscreen(value: boolean) {
     setOpenSettings(false);
@@ -56,7 +58,7 @@ export default function Settings() {
         <button
           type="button"
           title="Your device is keeping awake"
-          onClick={() => setConfig((prev) => ({ ...prev, keepAwake: false }))}
+          onClick={releaseWakeLock}
           data-visible={isMouseVisible && !openSettings && keepAwake}
         >
           <PiCoffee />
@@ -105,7 +107,7 @@ export default function Settings() {
                 <Switch
                   checked={keepAwake}
                   disabled={!("wakeLock" in navigator)}
-                  onChange={() => setConfig((prev) => ({ ...prev, keepAwake: !keepAwake }))}
+                  onChange={(value) => (value ? requestWakeLock() : releaseWakeLock())}
                 />
               </li>
 

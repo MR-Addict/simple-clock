@@ -1,58 +1,43 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 /**
  *
- * @param awake set to true to request a wake lock, false to release it
- * @returns whether the wake lock is active
+ * @returns A tuple containing the following values:
+ * - `keepAwake`: A boolean indicating whether the screen is kept awake
+ * - `requestWakeLock`: A function to request a wake lock
+ * - `releaseWakeLock`: A function to release the wake lock
  */
-export default function useWakelock(awake: boolean) {
+export default function useWakelock() {
   const [keepAwake, setKeepAwake] = useState(false);
 
   const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
-  useEffect(() => {
-    const updateLockStatus = () => setKeepAwake(wakeLockRef.current?.released === false);
+  function updateLockStatus() {
+    setKeepAwake(wakeLockRef.current?.released === false);
+  }
 
-    (async () => {
-      if (awake) {
-        /**
-         * If wake is true, request a wake lock.
-         */
-
-        try {
-          wakeLockRef.current = await navigator.wakeLock.request("screen");
-        } catch (e) {
-          console.error(e);
-        }
-      } else {
-        /**
-         * If wake is false, release the wake lock
-         */
-
-        try {
-          await wakeLockRef.current?.release();
-          setKeepAwake(wakeLockRef.current?.released === false);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
+  async function requestWakeLock() {
+    try {
+      wakeLockRef.current = await navigator.wakeLock.request("screen");
+      wakeLockRef.current.addEventListener("release", updateLockStatus);
+    } catch (err) {
+      console.error(err);
+    } finally {
       updateLockStatus();
+    }
+  }
 
-      wakeLockRef.current?.addEventListener("release", updateLockStatus);
-    })();
+  async function releaseWakeLock() {
+    try {
+      if (!wakeLockRef.current) return;
+      await wakeLockRef.current.release();
+      wakeLockRef.current.removeEventListener("release", updateLockStatus);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      updateLockStatus();
+    }
+  }
 
-    /**
-     * Cleanup function
-     */
-    return () => {
-      (async () => {
-        await wakeLockRef.current?.release();
-        wakeLockRef.current?.removeEventListener("release", updateLockStatus);
-        updateLockStatus();
-      })();
-    };
-  }, [awake]);
-
-  return keepAwake;
+  return [keepAwake, requestWakeLock, releaseWakeLock] as const;
 }

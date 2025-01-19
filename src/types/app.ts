@@ -7,11 +7,6 @@ export const AppConfig = z.object({
   size: z.number(),
 
   /**
-   * Whether to keep the screen awake
-   */
-  keepAwake: z.boolean(),
-
-  /**
    * Whether to show seconds
    */
   showSeconds: z.boolean(),
@@ -25,7 +20,6 @@ export type AppConfigType = z.infer<typeof AppConfig>;
 
 export const defaultAppConfig: AppConfigType = {
   size: 6,
-  keepAwake: false,
   showSeconds: false,
   showBackground: false
 };
