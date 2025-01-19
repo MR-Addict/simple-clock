@@ -22,6 +22,11 @@ export default function Settings() {
   const { setHint } = useScreenHintContext();
   const { userIdle, config, setConfig, openSettings, setOpenSettings } = useAppContext();
 
+  async function handleReleaseWakeLock() {
+    const success = await releaseWakeLock();
+    if (success) setHint("Released");
+  }
+
   async function handleFullscreen(value: boolean) {
     setOpenSettings(false);
 
@@ -58,7 +63,7 @@ export default function Settings() {
         <button
           type="button"
           title="Your device is keeping awake, click to release"
-          onClick={releaseWakeLock}
+          onClick={handleReleaseWakeLock}
           data-hide={userIdle || openSettings || !keepAwake}
         >
           <PiCoffee />
