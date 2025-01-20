@@ -46,6 +46,15 @@
   @apply flex flex-col gap-4;
   @apply bg-gray-100/20 rounded-xl py-4 pl-5 pr-3 h-full overflow-y-auto;
 
+  /* IE and Edge */
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+  /* Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    @apply hidden;
+  }
+
   & header {
     @apply flex flex-row items-center gap-1.5;
 
