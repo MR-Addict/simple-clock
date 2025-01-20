@@ -3,8 +3,10 @@ import react from "@vitejs/plugin-react-swc";
 
 import { defineConfig } from "vite";
 
+import pwa from "./src/lib/plugins/pwa";
+
 export default defineConfig({
-  base: "./",
-  plugins: [react()],
+  plugins: [pwa, react()],
+  base: process.env.GITHUB_REPOSITORY?.split("/").pop() || "/",
   resolve: { alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }] }
 });
